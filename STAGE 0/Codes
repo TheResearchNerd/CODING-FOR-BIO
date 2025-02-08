@@ -1,0 +1,20 @@
+STAGE 0 TASK
+Group\_info <- data.frame(
+
+  Name = c("Aisha Mehmood","Himabindu Kumdam", "Olabode Kaosara", "Oluwabusola Asenuga"),
+
+  Slack\_name = c("Aisha", "Himabindu", "TheResearchNerd", "Oluwabusola"),
+
+  email\_id = c("aishamehmood23\@gmail.com", "khbiitm\@gmail.com", "olabodeomowunmi5\@gmail.com", "asenugaoluwabusola\@gmail.com"),
+
+  Hobbies = c("Reading and shopping", "Music", "Research, Travelling, and Fashion", "Watching vlogs, Reading Novels, and Dressing up"),
+
+  Country\_of\_origin = c("Pakistan", "India", "Nigeria", "Nigeria"),
+
+  Background = c("Biotechnology", "Biotechnology", "Natural product chemistry", "Zoology"),
+
+  Programing\_language = c("R", "R", "R", "Python"))
+
+print(Group\_info)
+
+View (Group\_info)
