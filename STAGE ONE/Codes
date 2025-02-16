@@ -1,3 +1,29 @@
+Here's a summary of what the codes below entails:
+
+I worked on a bioinformatics project that involved creating multiple functions in R. The work involved five main components:
+
+1. DNA Translation Function:
+- Created a function (using the list data structure) that converts DNA sequences into their corresponding protein sequences
+
+2. Growth Curve Simulation:
+- Developed a function that generates logistic population growth curves
+- Added randomization parameters for lag and exponential phases
+- Did adjustments for different types of growth measurements (Population Size, Cell Density, OD, CFU)
+
+3. Multiple Growth Curves:
+- Generated a dataframe containing 100 distinct growth curves
+- Each curve shows unique growth patterns due to randomized parameters
+
+4. Growth Analysis:
+- Implemented a function to calculate the time needed to reach 80% of maximum growth
+
+5. Hamming Distance Calculator:
+- Created a function to calculate the Hamming distance between my slack and x usernames
+- Specifically compared "Theresearchnerd" and "Bodetharxdetail"
+
+All functions were implemented in R.
+
+
 #STAGE 1 TASK ON FUNCTIONS GALORE
 
 #TASK 1: Translate DNA to Protein}
