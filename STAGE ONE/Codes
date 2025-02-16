@@ -1,0 +1,174 @@
+#STAGE 1 TASK ON FUNCTIONS GALORE
+
+#TASK 1: Translate DNA to Protein}
+# DNA to Protein Translation Function
+translate_dna <- function(dna_sequence) {
+  # Genetic code dictionary
+  genetic_code <- list(
+    "TTT"="F", "TTC"="F", "TTA"="L", "TTG"="L", "TCT"="S", 
+    "TCC"="S", "TCA"="S", "TCG"="S", "TAT"="Y", "TAC"="Y", 
+    "TAA"="X", "TAG"="X", "TGT"="C", "TGC"="C", "TGA"="X", 
+    "TGG"="W", "CTT"="L", "CTC"="L", "CTA"="L", "CTG"="L", 
+    "CCT"="P", "CCC"="P", "CCA"="P", "CCG"="P", "CAT"="H", 
+    "CAC"="H", "CAA"="Q", "CAG"="Q", "CGT"="R", "CGC"="R", 
+    "CGA"="R", "CGG"="R", "ATT"="I", "ATC"="I", "ATA"="I", 
+    "ATG"="M", "ACT"="T", "ACC"="T", "ACA"="T", "ACG"="T", 
+    "AAT"="N", "AAC"="N", "AAA"="K", "AAG"="K", "AGT"="S", 
+    "AGC"="S", "AGA"="R", "AGG"="R", "GTT"="V", "GTC"="V", 
+    "GTA"="V", "GTG"="V", "GCT"="A", "GCC"="A", "GCA"="A", 
+    "GCG"="A", "GAT"="D", "GAC"="D", "GAA"="E", "GAG"="E", 
+    "GGT"="G", "GGC"="G", "GGA"="G", "GGG"="G"
+  )
+  
+  # Clean the sequence
+  dna_sequence <- gsub("[^ATCG]", "", toupper(dna_sequence))
+  
+  # Split into codons
+  codons <- strsplit(dna_sequence, "(?<=.{3})", perl=TRUE)[[1]]
+  
+  # Translate
+  protein <- vapply(codons, function(codon) {
+    if(nchar(codon) == 3) {
+      return(genetic_code[[codon]] %||% "X")
+    } else {
+      return("X")
+    }
+  }, character(1))
+  
+  return(paste(protein, collapse=""))
+}
+
+#TASK 2
+#Logistic Growth Curve Simulation
+simulate_growth <- function(
+    carrying_capacity = 1000,
+    growth_rate = 0.1,
+    initial_pop = 10,
+    time_points = 100,
+    lag_variance = 0.3,    # Controls randomization of lag phase
+    exp_variance = 0.2     # Controls randomization of exponential phase
+) {
+  # Generate random adjustments for lag and exponential phases
+  lag_adjustment <- runif(1, 1 - lag_variance, 1 + lag_variance)
+  exp_adjustment <- runif(1, 1 - exp_variance, 1 + exp_variance)
+  
+  # Create time series
+  time <- seq(0, time_points, length.out = time_points)
+  
+  # Calculate population using modified logistic equation
+  population <- carrying_capacity / (1 + ((carrying_capacity - initial_pop)/initial_pop) * 
+                                     exp(-growth_rate * exp_adjustment * (time - lag_adjustment * mean(time)/4)))
+  
+  # Add random noise
+  population <- population * rnorm(length(population), mean = 1, sd = 0.05)
+  
+  return(data.frame(Time = time, Population = population))
+}
+
+#TASK 3
+#Generate Multiple Growth Curves
+generate_curves <- function(n_curves = 100) {
+  # Create list to store curves
+  curves_list <- list()
+  
+  # Generate n curves
+  for(i in 1:n_curves) {
+    curve <- simulate_growth(
+      carrying_capacity = runif(1, 800, 1200),  # Random carrying capacity
+      growth_rate = runif(1, 0.08, 0.12),       # Random growth rate
+      initial_pop = runif(1, 5, 15)             # Random initial population
+    )
+    curve$Curve_ID <- i
+    curves_list[[i]] <- curve
+  }
+  
+  # Combine all curves into one dataframe
+  all_curves <- do.call(rbind, curves_list)
+  return(all_curves)
+}
+
+#TASK 4
+#Calculate Time to 80% Maximum Growth
+time_to_80_percent <- function(growth_data) {
+  if("Curve_ID" %in% names(growth_data)) {
+    # For multiple curves
+    results <- data.frame()
+    for(id in unique(growth_data$Curve_ID)) {
+      curve_data <- subset(growth_data, Curve_ID == id)
+      max_pop <- max(curve_data$Population)
+      target_pop <- 0.8 * max_pop
+      t80 <- curve_data$Time[which(curve_data$Population >= target_pop)[1]]
+      results <- rbind(results, data.frame(Curve_ID = id, Time_to_80 = t80))
+    }
+    return(results)
+  } else {
+    # For single curve
+    max_pop <- max(growth_data$Population)
+    target_pop <- 0.8 * max_pop
+    t80 <- growth_data$Time[which(growth_data$Population >= target_pop)[1]]
+    return(t80)
+  }
+}
+
+# Example usage and visualization
+library(ggplot2)
+
+# Generate 100 curves
+curves_df <- generate_curves(100)
+
+# Plot all curves
+ggplot(curves_df, aes(x = Time, y = Population, group = Curve_ID)) +
+  geom_line(alpha = 0.2) +
+  theme_minimal() +
+  labs(title = "100 Simulated Growth Curves",
+       x = "Time",
+       y = "Population Size")
+
+# Calculate time to 80% for all curves
+t80_results <- time_to_80_percent(curves_df)
+
+#TASK 5
+#Calculate Hamming Distance Between Usernames
+# Function to calculate Hamming distance between the specific usernames
+calculate_specific_distance <- function() {
+    # Define the two usernames
+    username1 <- "Theresearchnerd"
+    username2 <- "Bodetharxdetail"
+    
+    # Convert both strings to the same case
+    username1 <- tolower(username1)
+    username2 <- tolower(username2)
+    
+    # Get the maximum length
+    max_length <- max(nchar(username1), nchar(username2))
+    
+    # Pad shorter string with underscores if needed
+    username1_padded <- stringr::str_pad(username1, max_length, "right", "_")
+    username2_padded <- stringr::str_pad(username2, max_length, "right", "_")
+    
+    # Split into characters
+    chars1 <- strsplit(username1_padded, "")[[1]]
+    chars2 <- strsplit(username2_padded, "")[[1]]
+    
+    # Calculate Hamming distance
+    distance <- sum(chars1 != chars2)
+    
+    # Show comparison details
+    result <- list(
+        username1 = username1_padded,
+        username2 = username2_padded,
+        distance = distance,
+        different_positions = which(chars1 != chars2)
+    )
+    
+    return(result)
+}
+
+# Run the function
+result <- calculate_specific_distance()
+
+# Print results
+cat("Username 1:", "Theresearchnerd", "\n")
+cat("Username 2:", "Bodetharxdetail", "\n")
+cat("Hamming distance:", result$distance, "\n")
+cat("Different positions:", paste(result$different_positions, collapse = ", "), "\n")
