@@ -1,2 +1,2 @@
 # CODING-FOR-BIO
-In Stage 0, my team and I have been assigned to arrange our info using any data structure.
+Here, you will find repositories on different tasks worked on during the Hackbio Coding for Bio Internship.
