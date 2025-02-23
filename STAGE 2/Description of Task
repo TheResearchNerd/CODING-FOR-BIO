@@ -1,1 +1,51 @@
+**Analysis of Amino Acid Mutations and Their Impact on Protein Structure and Function**
+
+**Introduction:**
+
+This study explores how different amino acid mutations affect protein structure and function, based on data analyzed using SIFT scores (functional impact) and FoldX scores (structural impact).
+
+**Methodology:**
+
+The analysis began by combining two datasets containing SIFT and FoldX scores. I created unique identifiers for each mutation by concatenating protein IDs with amino acid changes (e.g., A5A607\_E63D). Using established thresholds (SIFT < 0.05 for functional impact, FoldX > 2 kCal/mol for structural impact), I identified mutations affecting both protein structure and function.
+
+_Key Findings:_
+
+**1. Structural and Functional Impact:**
+
+This analysis revealed that Cysteine (C) and Glycine (G) demonstrated the highest combined impact on protein structure and function. Cysteine showed the highest structural impact (FoldX score: 4.62 kCal/mol), while Tryptophan (W) and Tyrosine (Y) displayed the strongest functional impacts (SIFT scores: 0.00799 and 0.00899 respectively).
+
+**2. Frequency Analysis:**
+
+From the frequency table, the amino acid beginning with letter A( has the highest impact on protein structure and function, with a frequency of 16742.
+
+\- Some of the most structurally important amino acids (like Alanine, Glycine, and Arginine) also show the highest occurrence of mutations (>13,000 each)
+
+\- This high frequency might indicate these positions are particularly sensitive to mutations
+
+Among frequently occurring mutations (>100 occurrences), it was observed that:
+
+\- Alanine (16,742 occurrences), Glycine (16,060), and Arginine (14,065) were the most commonly mutated amino acids
+
+\- Despite lower frequency, Cysteine mutations showed consistently high impact
+
+\- Mutations in aromatic amino acids (Tryptophan, Tyrosine) demonstrated significant functional consequences
+
+\- The combination of high frequency and high impact suggests these amino acids are crucial "hotspots" for protein stability and function.
+
+**3. Structure-Function Relationships:**
+
+The data revealed interesting patterns in how mutations affect protein properties:
+
+\- Structural Impact: Most amino acids showed FoldX scores between 4.10 and 4.62 kCal/mol
+
+\- Functional Impact: SIFT scores typically ranged from 0.015 to 0.020, with notable exceptions in aromatic amino acids
+
+\- Combined Effects: Glycine showed how mutations can substantially impact both structure (4.59 kCal/mol) and function (0.0116 SIFT score)
+
+
+**Conclusions:**
+
+This analysis demonstrates that certain amino acids, particularly Cysteine and Glycine, play crucial roles in maintaining protein structure and function. The high impact of Cysteine mutations aligns with its known importance in forming disulfide bonds and maintaining protein stability. The frequency data suggests that while some amino acids are more commonly mutated, the severity of impact does not necessarily correlate with mutation frequency.
+
+These findings have important implications for understanding protein evolution, predicting mutation effects, and potentially guiding drug design strategies. The identification of high-impact mutation sites could be particularly valuable for studying genetic diseases and developing targeted therapeutic approaches.
 
