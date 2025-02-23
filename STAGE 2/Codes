@@ -1,0 +1,211 @@
+\# Download and read the TSV file
+
+url <- "https\://raw\.githubusercontent.com/HackBio-Internship/public\_datasets/main/R/datasets/sift.tsv"
+
+sift\_data <- read.delim(url, sep="\t", header=TRUE, col.names=c("Protein", "Amino\_Acid", "sift\_Score"))
+
+\#Confirm data is well aligned
+
+str(sift\_data)
+
+head(sift\_data)
+
+View(sift\_data)
+
+ 
+
+\# Import 2nd dataset
+
+url\_2 <- "https\://raw\.githubusercontent.com/HackBio-Internship/public\_datasets/main/R/datasets/foldX.tsv"
+
+fold\_data <- read.delim(url\_2, sep="\t", header=TRUE, col.names=c("Protein", "Amino\_Acid", "foldX\_Score"))
+
+str(fold\_data)
+
+head(fold\_data)
+
+View(fold\_data)
+
+ 
+
+\#Load libraries
+
+library(dplyr)
+
+library(ggplot2)
+
+ 
+
+\#Create a combined colum
+
+sift\_data$specific\_Protein\_aa <- paste(sift\_data$Protein, sift\_data$Amino\_acid, sep="\_")
+
+fold\_data$specific\_Protein\_aa <- paste(fold\_data$Protein, fold\_data$Amino\_acid, sep="\_")
+
+ 
+
+\#merge both datasets using Specific\_Protein\_aa
+
+merged\_data <- merge(sift\_data, fold\_data, by="specific\_Protein\_aa")
+
+ 
+
+\# Filter mutations that affect structure and function
+
+deleterious\_mutations <- merged\_data %>%
+
+  filter(sift\_Score < 0.05 & foldX\_Score > 2)
+
+ 
+
+\# View the first few rows
+
+head(deleterious\_mutations)
+
+ 
+
+\#Find deleterious amino acid by extracting the first letter of the amino acid (original\_aa) from the Amino\_acid column
+
+names(deleterious\_mutations)
+
+deleterious\_mutations$original\_aa = substr(deleterious\_mutations$Amino\_Acid.x, 1, 1)
+
+ 
+
+All\_aa\_frequency <- table(deleterious\_mutations$original\_aa) # Create frequency table
+
+All\_aa\_frequency\_df <- as.data.frame(All\_aa\_frequency)
+
+colnames(All\_aa\_frequency\_df) <- c("Amino\_Acid", "Frequency")
+
+ 
+
+\# View frequency table
+
+print(All\_aa\_frequency\_df)
+
+\# From the frequency table, the amino acid beginning with letter A has the highest impact on protein structure and function, with a frequency of 16742.
+
+ 
+
+\# Generate Bar plot to represent aa frequency
+
+ggplot(All\_aa\_frequency\_df, aes(x=Amino\_Acid, y=Frequency)) +
+
+  geom\_bar(stat="identity", fill="blue") +
+
+  theme\_minimal() +
+
+  labs(title="Frequency of Amino Acids in Deleterious Mutations",
+
+       x="Amino Acid",
+
+       y="Frequency") +
+
+  theme(axis.text.x = element\_text(angle=45, hjust=1))
+
+ 
+
+\# Generate Pie chart to represent distribution frequency of aa
+
+ggplot(All\_aa\_frequency\_df, aes(x="", y=Frequency, fill=Amino\_Acid)) +
+
+  geom\_bar(stat="identity", width=1) +
+
+  coord\_polar("y", start=0) +
+
+  theme\_void() +
+
+  labs(title="Frequency Distribution of Amino Acids in Deleterious Mutations",
+
+       fill="Amino Acid")
+
+\# Find amino acids with more than 100 occurrences
+
+Hundred\_occurences\_aa <- All\_aa\_frequency\_df %>%
+
+  filter(Frequency > 100)
+
+ 
+
+\# Calculate average SIFT and FoldX scores for frequent amino acids
+
+aa\_stats <- deleterious\_mutations %>%
+
+  group\_by(original\_aa) %>%
+
+  summarise(
+
+    avg\_sift = mean(sift\_Score),
+
+    avg\_foldx = mean(foldX\_Score),
+
+    count = n()
+
+  ) %>%
+
+  filter(count > 100)
+
+ 
+
+\# View statistics
+
+print(aa\_stats)
+
+ 
+
+ 
+
+\# Calculate combined impact score (this is one way to do it - you might want to adjust the method)
+
+aa\_impact <- deleterious\_mutations %>%
+
+  group\_by(original\_aa) %>%
+
+  summarise(
+
+    avg\_impact = mean((1 - sift\_Score) \* foldX\_Score),  # Lower sift and higher foldX indicate more impact
+
+    count = n()
+
+  ) %>%
+
+  arrange(desc(avg\_impact))
+
+ 
+
+\# View the results
+
+print(aa\_impact)
+
+ 
+
+ 
+
+\# For amino acids with more than 100 occurrences
+
+structural\_functional\_analysis <- deleterious\_mutations %>%
+
+  group\_by(original\_aa) %>%
+
+  summarise(
+
+    count = n(),
+
+    avg\_structural\_impact = mean(foldX\_Score),
+
+    avg\_functional\_impact = mean(sift\_Score),
+
+    percent\_highly\_deleterious = mean(sift\_Score < 0.01 & foldX\_Score > 3) \* 100
+
+  ) %>%
+
+  filter(count > 100) %>%
+
+  arrange(desc(count))
+
+ 
+
+\# View the analysis output
+
+print(structural\_functional\_analysis)
