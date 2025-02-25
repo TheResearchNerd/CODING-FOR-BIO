@@ -156,7 +156,7 @@ print(aa\_stats)
 
  
 
-\# Calculate combined impact score (this is one way to do it - you might want to adjust the method)
+\# Calculate combined impact score
 
 aa\_impact <- deleterious\_mutations %>%
 
